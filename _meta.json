@@ -1,0 +1,24 @@
+{
+  "name": "hotel-compete-report",
+  "version": "1.0.0",
+  "description": "酒店竞品价格分析报告生成器，支持多平台数据采集和双重校准定价算法",
+  "author": "德胧AI实验室",
+  "license": "MIT",
+  "tags": ["hotel", "revenue-management", "competitive-analysis", "pricing", "fliggy"],
+  "keywords": [
+    "hotel", "competitor-analysis", "price-optimization", "revenue-management",
+    "五一", "国庆", "假期定价", "收益管理", "开元", "德胧"
+  ],
+  "homepage": "https://github.com/delonix-ai/hotel-compete-report",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/delonix-ai/hotel-compete-report"
+  },
+  "platforms": ["openclaw", "trae", "codebuddy", "coze", "miaoda"],
+  "python_version": "3.8+",
+  "dependencies": [],
+  "optional_dependencies": {
+    "flyai_mcp": "FlyAI MCP for Fliggy real-time data",
+    "requests": "HTTP library for API calls"
+  }
+}
