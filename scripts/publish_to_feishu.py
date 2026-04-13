@@ -2,7 +2,7 @@
 """
 publish_to_feishu.py - 将生成的Markdown报告批量发布到飞书云文档
 用法:
-python scripts/publish_to_feishu.py --input test_output/README.md --folder-token <folder_token>
+python scripts/publish_to_feishu.py --input output/README.md [--folder-token your-folder-token]
 
 说明:
 - 读取README.md中的报告列表
@@ -15,40 +15,108 @@ import os
 import sys
 import argparse
 import re
+import json
+import requests
 from typing import List, Dict
 
-import sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from feishu_sdk.client import FeishuClient
+
+class FeishuClient:
+    """飞书API客户端（飞书云文档创建）"""
+
+    def __init__(self, app_id: str, app_secret: str):
+        self.app_id = app_id
+        self.app_secret = app_secret
+        self._token = None
+
+    def get_access_token(self) -> str:
+        """获取tenant access token"""
+        if self._token:
+            return self._token
+        url = "https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal"
+        resp = requests.post(url, json={
+            "app_id": self.app_id,
+            "app_secret": self.app_secret
+        })
+        data = resp.json()
+        if data.get("code") == 0:
+            self._token = data.get("tenant_access_token")
+            return self._token
+        raise ValueError(f"get token failed: {data}")
+
+    def create_doc(self, title: str, markdown: str, folder_token: str = None) -> dict:
+        """创建飞书云文档"""
+        token = self.get_access_token()
+        url = "https://open.feishu.cn/open-apis/docx/v1/documents"
+
+        # 转换markdown到飞书文档格式
+        body = {
+            "title": title,
+            "content": json.dumps([
+                {"tag": "markdown", "text": markdown}
+            ]),
+        }
+        if folder_token:
+            body["folder_token"] = folder_token
+
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "Content-Type": "application/json; charset=utf-8"
+        }
+
+        resp = requests.post(url, json=body, headers=headers)
+        return resp.json()
+
 
 def parse_readme(readme_path: str) -> List[Dict]:
     """解析README.md获取所有报告"""
     results = []
     with open(readme_path, "r", encoding="utf-8") as f:
         for line in f:
-            # 匹配 "- [酒店名](md_path) → [HTML版本](html_path) 推荐价格 ¥xxx"
-            m = re.match(r'^- \[(.*?)\]\((.*?)\).*¥(\d+)', line.strip())
+            # 匹配表格行 "| 酒店名称 | HTML最新 | 生成日期 | 推荐价格 |"
+            m = re.match(r'^\|\s*\[([^\]]+)\]\(([^)]+)\)\s*\|.*¥(\d+)\s*\|', line.strip())
             if m:
                 name = m.group(1)
                 md_path = m.group(2)
                 price = int(m.group(3))
+                # 相对于readme的路径
+                base_dir = os.path.dirname(readme_path)
+                full_md_path = os.path.join(base_dir, md_path)
                 results.append({
                     "name": name,
-                    "md_path": os.path.join(os.path.dirname(readme_path), md_path),
-                    "recommended_price": price
+                    "md_path": full_md_path,
+                    "recommended_price": price,
                 })
+    # 如果没匹配到，尝试旧格式
+    if not results:
+        with open(readme_path, "r", encoding="utf-8") as f:
+            for line in f:
+                m = re.match(r'^- \[(.*?)\]\((.*?)\).*¥(\d+)', line.strip())
+                if m:
+                    name = m.group(1)
+                    md_path = m.group(2)
+                    price = int(m.group(3))
+                    base_dir = os.path.dirname(readme_path)
+                    full_md_path = os.path.join(base_dir, md_path)
+                    results.append({
+                        "name": name,
+                        "md_path": full_md_path,
+                        "recommended_price": price,
+                    })
     return results
+
 
 def read_markdown(md_path: str) -> str:
     """读取Markdown内容"""
     with open(md_path, "r", encoding="utf-8") as f:
         return f.read()
 
+
 def main():
     parser = argparse.ArgumentParser(description="批量发布报告到飞书云文档")
     parser.add_argument("--input", "-i", required=True, help="README.md 文件路径")
-    parser.add_argument("--folder-token", "-f", required=False, help="飞书云文件夹token（可选，不传则放根目录）")
+    parser.add_argument("--folder-token", "-f", required=False, default="", help="飞书云文件夹token（可选，不传则放根目录）")
     args = parser.parse_args()
 
     # 读取飞书凭证
@@ -62,7 +130,7 @@ def main():
     reports = parse_readme(args.input)
     print(f"📋 找到 {len(reports)} 份报告准备发布")
 
-    # 初始化飞书客户端
+    # 初始化客户端
     client = FeishuClient(app_id, app_secret)
 
     # 逐个发布
@@ -73,19 +141,32 @@ def main():
         title = f"{report['name']} 竞品价格分析报告"
 
         try:
-            result = client.create_doc(
-                title=title,
-                markdown=content,
-                folder_token=args.folder_token
-            )
-            url = result.get("url")
-            print(f"   ✅ 成功: {url}")
-            created_urls.append({
-                "name": report['name'],
-                "url": url
-            })
+            result = client.create_doc(title, content, args.folder_token if args.folder_token else None)
+            print(f"   API返回: {json.dumps(result, indent=2, ensure_ascii=False)}")
+            if result.get("code") == 0:
+                if "data" in result and "document" in result["data"] and "document_id" in result["data"]["document"]:
+                    doc_id = result['data']['document']['document_id']
+                    doc_url = f"https://bytedance.feishu.cn/docx/{doc_id}"
+                    print(f"   ✅ 成功: {doc_url}")
+                    created_urls.append({
+                        "name": report['name'],
+                        "url": doc_url,
+                    })
+                elif "data" in result and "url" in result["data"]:
+                    doc_url = result['data']['url']
+                    print(f"   ✅ 成功: {doc_url}")
+                    created_urls.append({
+                        "name": report['name'],
+                        "url": doc_url,
+                    })
+                else:
+                    print(f"   ⚠️ 创建成功，但无法获取URL")
+            else:
+                print(f"   ❌ 失败: {result.get('msg')}")
         except Exception as e:
-            print(f"   ❌ 失败: {e}")
+            print(f"   ❌ 异常: {e}")
+            import traceback
+            traceback.print_exc()
             continue
 
     # 输出汇总
@@ -95,6 +176,7 @@ def main():
     for item in created_urls:
         print(f"- {item['name']}: {item['url']}")
     print("="*60)
+
 
 if __name__ == "__main__":
     main()

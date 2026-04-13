@@ -17,15 +17,17 @@ import statistics
 
 @dataclass
 class HotelPOI:
-    """酒店POI对象（来自高德/飞猪）"""
+    """酒店POI对象（来自高德/飞猪/Google搜索）"""
     name: str
     location: str           # "lon,lat"
     star: str                # 五星级/四星级/高档型...
     brand: str = ""          # 品牌名
-    price: Optional[int] = None  # 今日价格
+    price: Optional[int] = None  # 平日价格
     distance_km: Optional[float] = None
     occupancy: Optional[str] = None  # 满房/high/medium/low
-    source: str = "amap"     # amap | fliggy | manual
+    rating: Optional[float] = None  # 用户评分（Google搜索获取）
+    review_count: Optional[int] = None  # 评价数量
+    source: str = "amap"     # amap | fliggy | manual | google
 
 
 @dataclass
@@ -205,6 +207,24 @@ def calc_occupancy_bonus(occupancy: Optional[str], config: FilterConfig) -> floa
     return 0
 
 
+# ── 用户评分加分 (Google搜索补充) ──────────────────────────
+
+def calc_rating_bonus(rating: Optional[float], review_count: Optional[int]) -> float:
+    """
+    根据用户评分给额外加分：
+    - 评分 ≥ 4.5 + 评价数 ≥ 100 → +5分
+    - 评分 ≥ 4.0 + 评价数 ≥ 50 → +3分
+    - 否则 → 0分
+    """
+    if rating is None or review_count is None:
+        return 0
+    if rating >= 4.5 and review_count >= 100:
+        return 5.0
+    if rating >= 4.0 and review_count >= 50:
+        return 3.0
+    return 0
+
+
 # ── 异常值过滤 ─────────────────────────────────────────────
 
 def filter_price_outliers(prices: List[float], iqr_factor: float = 1.5) -> List[bool]:
@@ -294,16 +314,20 @@ def score_competitor_v2(
     # 5. occupancy加分
     occ_bonus = calc_occupancy_bonus(hotel.occupancy, config)
 
-    # 6. 加权总分（动态权重）
+    # 6. 用户评分加分（Google搜索补充）
+    rating_bonus = calc_rating_bonus(hotel.rating, hotel.review_count)
+
+    # 7. 加权总分（动态权重 + 各种加分）
     total = (
         dist_score * config.weight_distance +
         star_score * config.weight_star +
         brand_score * config.weight_brand +
         price_score * config.weight_price +
-        occ_bonus
+        occ_bonus +
+        rating_bonus
     )
 
-    # 7. 判断是否有效进入推荐（有效=进入AI调价精选）
+    # 8. 判断是否有效进入推荐（有效=进入AI调价精选）
     is_valid = (
         dist_score >= 30 and
         total >= config.min_score

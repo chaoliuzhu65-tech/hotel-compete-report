@@ -1,7 +1,12 @@
 #!/usr/bin/env python3
 """
-amap_client.py - amap-sdk 官方SDK封装
+amap_client.py - amap-sdk 官方SDK封装 + 缓存层节省API配额
 替代原有CLI调用，提供更稳定的Python API接口
+
+解决API限额问题：
+- 免费版QPS=1，每日调用=300次
+- 添加文件缓存，相同查询不重复调用
+- 请求延迟规避QPS限制
 
 文档：https://github.com/Horacehxw/amap-sdk-python
 安装：pip install amap-sdk
@@ -10,10 +15,12 @@ Key申请：https://console.amap.com/dev/key/app
 
 import os
 import math
+import time
 from typing import List, Dict, Optional, Tuple
 from dataclasses import dataclass, field
 
 from amap import AmapClient
+from core.amap_cache import get_cached_around_search, save_around_search
 
 
 # ── 数据模型 ─────────────────────────────────────────────
@@ -122,9 +129,12 @@ class AmapClientWrapper:
         radius_km: float = 3.0,
         page_size: int = 20,
         page_num: int = 1,
+        use_cache: bool = True,
+        delay_ms: int = 1000,
     ) -> List[POIRecord]:
         """
         周边搜索（指定坐标半径内）
+        带缓存：相同查询直接返回缓存，节省API配额
 
         Args:
             keywords: 搜索关键词
@@ -132,7 +142,23 @@ class AmapClientWrapper:
             radius_km: 搜索半径（km）
             page_size: 每页数量
             page_num: 页码
+            use_cache: 是否使用缓存（默认True，节省API配额）
+            delay_ms: 请求间隔毫秒，默认1000ms，规避QPS=1限制
         """
+        # 先查缓存
+        if use_cache:
+            cached = get_cached_around_search(keywords, location, radius_km)
+            if cached is not None:
+                # 缓存命中，直接返回
+                records = []
+                for p in cached:
+                    records.append(POIRecord(**p))
+                return records
+
+        # 缓存未命中，真正API调用
+        if delay_ms > 0:
+            time.sleep(delay_ms / 1000.0)  # 延迟规避QPS限制
+
         r = self._client.poi.around_search(
             keywords=keywords,
             location=f"{location[0]},{location[1]}",
@@ -140,7 +166,14 @@ class AmapClientWrapper:
             page_size=min(page_size, 25),
             page_num=page_num,
         )
-        return self._parse_poi_response(r)
+        records = self._parse_poi_response(r)
+
+        # 保存到缓存
+        if use_cache:
+            cached_data = [p.__dict__ for p in records]
+            save_around_search(keywords, location, radius_km, cached_data)
+
+        return records
 
     def poi_detail(self, poi_id: str) -> Optional[POIRecord]:
         """获取POI详情"""
