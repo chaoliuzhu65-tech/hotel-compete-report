@@ -1,0 +1,141 @@
+{
+  "version": "4.0",
+  "generated": "2026-04-13",
+  "data_source": "飞猪FlyAI实时数据",
+  "ruiwan": {
+    "name": "天津瑞湾开元名都酒店",
+    "star": "豪华型",
+    "weekday_price": 358,
+    "holiday_price": 557,
+    "increase_pct": 55.6,
+    "lat": 39.000893,
+    "lon": 117.710212,
+    "brand": "百达屋/开元名都"
+  },
+  "competitors": [
+    {
+      "name": "天津极地海洋酒店",
+      "star": "高档型",
+      "brand": "国内",
+      "weekday": 487,
+      "holiday": 1769,
+      "increase_pct": 263.2,
+      "distance_km": 3.9,
+      "tier": "theme",
+      "recommend_exclude": true,
+      "note": "主题酒店，价格波动极大，不可比"
+    },
+    {
+      "name": "天津于家堡洲际酒店",
+      "star": "豪华型",
+      "brand": "国际IHG",
+      "weekday": 900,
+      "holiday": 1627,
+      "increase_pct": 80.8,
+      "distance_km": 2.6,
+      "tier": "international_luxury",
+      "recommend_exclude": true,
+      "note": "国际联号，品牌溢价高，不可直接对标"
+    },
+    {
+      "name": "天津滨海皇冠假日酒店",
+      "star": "豪华型",
+      "brand": "国际IHG",
+      "weekday": 882,
+      "holiday": 1364,
+      "increase_pct": 54.6,
+      "distance_km": 2.8,
+      "tier": "international_luxury",
+      "recommend_exclude": true,
+      "note": "国际联号，品牌溢价高，不可直接对标"
+    },
+    {
+      "name": "天津万丽泰达酒店",
+      "star": "五星级",
+      "brand": "国际万豪",
+      "weekday": 777,
+      "holiday": 1097,
+      "increase_pct": 41.2,
+      "distance_km": 3.4,
+      "tier": "international_luxury",
+      "recommend_exclude": true,
+      "note": "国际联号，品牌溢价高，不可直接对标"
+    },
+    {
+      "name": "天津泰达万豪行政公寓",
+      "star": "豪华型",
+      "brand": "国际万豪",
+      "weekday": 812,
+      "holiday": 954,
+      "increase_pct": 17.5,
+      "distance_km": 3.4,
+      "tier": "international_luxury",
+      "recommend_exclude": true,
+      "note": "国际联号，品牌溢价高，不可直接对标"
+    },
+    {
+      "name": "天津滨海泰达希尔顿欢朋",
+      "star": "高档型",
+      "brand": "国际希尔顿欢朋",
+      "weekday": 540,
+      "holiday": 920,
+      "increase_pct": 70.4,
+      "distance_km": 3.5,
+      "tier": "international_upscale",
+      "recommend_exclude": true,
+      "note": "国际联号（中档品牌），参考意义有限"
+    },
+    {
+      "name": "天津生态城希尔顿酒店",
+      "star": "豪华型",
+      "brand": "国际希尔顿",
+      "weekday": 500,
+      "holiday": 899,
+      "increase_pct": 79.8,
+      "distance_km": 14.3,
+      "tier": "international_luxury",
+      "recommend_exclude": true,
+      "note": "超出5KM范围，且为国际联号"
+    },
+    {
+      "name": "天津鲤鱼门大酒店",
+      "star": "高档型",
+      "brand": "国内",
+      "weekday": 344,
+      "holiday": 491,
+      "increase_pct": 42.7,
+      "distance_km": 24.3,
+      "tier": "domestic_budget",
+      "recommend_exclude": true,
+      "note": "超出5KM范围，档次偏低"
+    }
+  ],
+  "analysis": {
+    "luxury_competitors_avg_increase": 51.0,
+    "luxury_competitors_avg_weekday": 865,
+    "luxury_competitors_avg_holiday": 1315,
+    "ruiwan_weekday_vs_luxury_avg_pct": 41.4,
+    "recommendation": {
+      "conservative": 650,
+      "recommended": 720,
+      "aggressive": 780
+    },
+    "tier_pricing": {
+      "4/30": {"price": 620, "note": "错峰，保守定价"},
+      "5/1": {"price": 720, "note": "核心峰值"},
+      "5/2": {"price": 720, "note": "核心峰值"},
+      "5/3": {"price": 680, "note": "返程，小幅回调"},
+      "5/4": {"price": 680, "note": "返程，小幅回调"},
+      "5/5": {"price": 600, "note": "工作日，恢复常态"}
+    },
+    "revenue_impact": {
+      "current_price": 557,
+      "current_revenue_85pct": 473500,
+      "recommended_price": 720,
+      "recommended_revenue_75pct": 540000,
+      "delta_revenue": 66500,
+      "breakeven_occupancy": 68
+    }
+  },
+  "key_insight": "瑞湾平日价仅为豪华型竞品均值865元的41%，导致同等涨幅下绝对价差距被放大。五一定价应以绝对值校准为主，目标：比最近竞品（希尔顿欢朋920元）便宜150-200元，维持性价比优势。"
+}
