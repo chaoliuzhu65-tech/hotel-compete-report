@@ -49,8 +49,14 @@ class FeishuClient:
         """
         创建飞书云文档 - 正确格式
         飞书API要求:
-        - content 是 JSON array of blocks
-        - 每个block是 {"type": "markdown", "content": "..."}
+        {
+          "title": "xxx",
+          "content": {
+            "blocks": [
+              {"type": "markdown", "content": "..."}
+            ]
+          }
+        }
         """
         token = self.get_access_token()
         url = "https://open.feishu.cn/open-apis/docx/v1/documents"
@@ -82,7 +88,9 @@ class FeishuClient:
 
         body = {
             "title": title,
-            "content": json.dumps(blocks),
+            "content": {
+                "blocks": blocks
+            },
         }
         if folder_token:
             body["folder_token"] = folder_token
@@ -92,6 +100,7 @@ class FeishuClient:
             "Content-Type": "application/json; charset=utf-8"
         }
 
+        # 整个body一起json序列化，避免双重编码
         resp = requests.post(url, json=body, headers=headers)
         return resp.json()
 

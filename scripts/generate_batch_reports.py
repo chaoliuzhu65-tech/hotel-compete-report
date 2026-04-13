@@ -14,7 +14,7 @@ from datetime import datetime
 from typing import List, Dict
 
 import sys
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from core.amap_client import AmapClientWrapper as AmapClient
 from core.competitor_filter_v2 import HotelPOI, filter_competitors_v2, FilterConfig, get_config_for_scenario, filter_competitors_grouped, GroupedCompetitors
@@ -97,13 +97,13 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 <title>{hotel_name} - 竞品价格分析报告</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
-  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
-  .container { max-width: 900px; }
-  @media (max-width: 640px) {
-    .container { padding: 10px; }
-    table { font-size: 0.9em; }
-    th, td { padding: 8px 6px !important; }
-  }
+  body {{ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }}
+  .container {{ max-width: 900px; }}
+  @media (max-width: 640px) {{
+    .container {{ padding: 10px; }}
+    table {{ font-size: 0.9em; }}
+    th, td {{ padding: 8px 6px !important; }}
+  }}
 </style>
 </head>
 <body>
@@ -363,7 +363,7 @@ class ReportGenerator:
         hotel_slug = self._slugify(hotel_info["name"])
         base_name = f"{hotel_slug}-{date_str}"
         hotel_output_dir = os.path.join(output_dir, hotel_slug)
-        os.mmakedirs(hotel_output_dir, exist_ok=True)
+        os.makedirs(hotel_output_dir, exist_ok=True)
 
         md_path = os.path.join(hotel_output_dir, f"{base_name}.md")
         html_path = os.path.join(hotel_output_dir, f"{base_name}.html")

@@ -1,0 +1,32 @@
+{
+  "version": "4.0",
+  "generated": "2026-04-14",
+  "data_source": "飞猪Fliggy+高德地图双引擎实时采集",
+  "description": "五一竞品价格分析报告 - 两家酒店",
+  "hotels": [
+    {
+      "name": "杭州浙旅开元名庭大酒店",
+      "brand": "开元名庭",
+      "star": "四星级/中高档",
+      "weekday_price": 358,
+      "target_date": "2026-05-01",
+      "lat": 30.2555,
+      "lon": 120.1533,
+      "district": "杭州市上城区",
+      "max_distance_km": 5,
+      "scenario": "downtown"
+    },
+    {
+      "name": "天津瑞湾开元名都大酒店",
+      "brand": "开元名都",
+      "star": "五星级/豪华型",
+      "weekday_price": 443,
+      "target_date": "2026-05-01",
+      "lat": 39.000893,
+      "lon": 117.710212,
+      "district": "天津市滨海新区",
+      "max_distance_km": 5,
+      "scenario": "downtown"
+    }
+  ]
+}
