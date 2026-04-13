@@ -199,6 +199,41 @@ python scripts/travel_assistant.py \
 
 ---
 
+## 📤 发布方式
+
+### 方式一：GitHub Pages 静态网页（公开可访问）
+
+```bash
+# 批量生成到docs目录
+python scripts/generate_batch_reports.py --input examples/three_hotels.json --output docs --api-key YOUR_KEY
+
+# 提交到GitHub，自动通过GitHub Pages发布
+git add docs/ && git commit -m "update reports" && git push
+```
+
+**特点：**
+- ✅ 每家酒店生成独立HTML文件，文件名唯一（按酒店名slug），**不会相互覆盖**
+- ✅ 自动生成README索引页，包含所有报告链接
+- ✅ GitHub Pages免费托管，任何人都可以访问
+
+### 方式二：飞书云文档（德胧内部同事使用）
+
+```bash
+# 设置飞书凭证（需要开发者后台创建应用）
+export FEISHU_APP_ID="你的AppID"
+export FEISHU_APP_SECRET="你的AppSecret"
+
+# 批量发布到飞书云空间
+python scripts/publish_to_feishu.py --input test_output/README.md --folder-token "你的文件夹token"
+```
+
+**特点：**
+- ✅ 直接创建为飞书云文档，**无GitHub Pages缓存延迟**，打开就是最新
+- ✅ 同名文档会自动创建新版本，不会覆盖历史
+- ✅ 权限继承自飞书云文件夹，方便德胧内部同事协作查看
+
+---
+
 ## 同类开源项目参考
 
 - [autumn-agentic-copilot](https://github.com/Moriyan1307/autumn-agentic-copilot) - 多智能体AI收益管理系统，借鉴了自然语言策略配置思想

@@ -1,3 +1,4 @@
 amap-sdk>=0.1.0
 pandas>=2.0
 requests>=2.28
+lark-sdk>=1.0.0

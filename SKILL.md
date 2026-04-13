@@ -1,18 +1,19 @@
-# hotel-compete-report Skill v3.0
+# hotel-compete-report Skill v3.2
 
-> 酒店竞品价格监测 + 行业扩展 + 调价建议
-> 高德地图POI + 飞猪价格API + amap-sdk官方SDK
+> 德胧酒店集团 AI-native 市场收益管理工具
+> 酒店竞品价格监测 + 行业扩展检索 + AI调价建议 + 飞书云文档直接发布
 
 ---
 
-## 四大核心模块
+## 五大核心模块
 
 | 模块 | 路径 | 功能 |
 |------|------|------|
-| **多维竞品评分** | `core/competitor_filter.py` | 距离×星级×品牌×价格四维评分 |
+| **多维软性分组筛选 v2.1** | `core/competitor_filter_v2.py` | 强相关用于AI，全部分组用于市场观测 |
 | **amap-sdk封装** | `core/amap_client.py` | 官方Python SDK（替代CLI）|
 | **行业扩展检索** | `industry_search/multi_industry.py` | 酒店/餐饮/零售/银行/出行全链 |
-| **调价算法** | `algorithm/pricing_advisor.py` | AI调价建议（独立Skill）|
+| **AI调价建议引擎** | `algorithm/pricing_advisor.py` | 弹性分析+CPI定位+三档策略 |
+| **🧳 出行AI伴侣** | `scripts/travel_assistant.py` | 自然语言查询周边，变身出行助手 |
 
 ---
 
@@ -21,105 +22,53 @@
 ### 1. 安装依赖
 
 ```bash
-pip install amap-sdk pandas openai
-export AMAP_MAPS_API_KEY="你的Key"
+pip install amap-sdk pandas openai lark-sdk
+export AMAP_MAPS_API_KEY="你的高德Key"
 ```
 
-### 2. 多维竞品评分
-
-```python
-from core.competitor_filter import HotelPOI, filter_competitors, CompetitorScore
-
-target = HotelPOI(
-    name="天津瑞湾开元名都",
-    location="117.745689,39.021567",
-    star="高档型",
-    brand="开元",
-    price=443
-)
-candidates = [
-    HotelPOI(name="天津于家堡洲际", location="117.701234,39.012345",
-             star="五星级", brand="洲际", price=916, distance_km=4.2),
-    HotelPOI(name="天津泰达万豪", location="117.723456,39.034567",
-             star="五星级", brand="万豪", price=812, distance_km=2.8),
-]
-scores = filter_competitors(candidates, target, base_price=443, max_distance_km=5.0)
-for s in scores:
-    print(f"✅ {s.hotel.name} | 总分:{s.total_score}")
-```
-
-### 3. 行业扩展检索
-
-```python
-from industry_search.multi_industry import MultiIndustrySearcher
-
-searcher = MultiIndustrySearcher(api_key="你的Key")
-searcher.set_hotel_location("天津瑞湾开元名都", (117.745689, 39.021567))
-report = searcher.generate_report(
-    categories=["住宿", "餐饮", "出行", "购物", "金融"],
-    radius_km=5
-)
-searcher.print_report(report)
-```
-
-**输出示例：**
-```
-🏨 天津瑞湾开元名都 | 半径5km出行全链报告
-🏨 住宿（竞品酒店监测）  总数：38家 | 3km内：32家 | 完善度：100.0/100
-🍽️ 餐饮（目的地餐饮配套）总数：49家 | 3km内：37家 | 完善度：80.0/100
-✈️ 出行（交通便利性评估）总数：23家 | 3km内：22家 | 完善度：90.0/100
-📊 综合配套评分：319/100
-```
-
-### 4. AI调价建议
-
-```python
-from algorithm.pricing_advisor import PricingAdvisor, CompetitorData, DemandLevel
-
-competitors = [
-    CompetitorData("于家堡洲际", base_price=916, holiday_price=1397, star="五星级"),
-    CompetitorData("滨海皇冠假日", base_price=848, holiday_price=1349, star="五星级"),
-    CompetitorData("万丽泰达", base_price=721, holiday_price=1108, star="五星级"),
-    CompetitorData("泰达万豪", base_price=673, holiday_price=1026, star="五星级"),
-]
-advisor = PricingAdvisor(
-    base_price=443,
-    competitors=competitors,
-    demand_level=DemandLevel.HIGH,
-    target_date="2026-05-01"
-)
-rec = advisor.analyze()
-advisor.print_recommendation(rec)
-```
-
-**输出示例：**
-```
-✅ 推荐策略：AGGRESSIVE
-💰 推荐价格：¥722
-📈 推荐涨幅：+63.0%
-🎯 置信度：95%
-💡 备选方案：
-     conservative ¥640（+44.6%）
-     standard     ¥697（+57.5%）
-   ⭐ aggressive  ¥722（+63.0%）
-```
-
-### 5. 飞猪价格采集
+### 2. 批量生成多家酒店报告
 
 ```bash
-export FLIGGY_KEY="你的飞猪API Key"
-python scripts/build_compete_report.py \
-  --hotel "天津瑞湾开元名都" \
-  --target-date 2026-05-01 \
-  --base-price 443
+# 输入JSON，输出Markdown + HTML双格式
+python3 scripts/generate_batch_reports.py --input examples/three_hotels.json --output reports --api-key $AMAP_MAPS_API_KEY
 ```
+
+### 3. 🧳 出行AI伴侣 - 自然语言查询周边
+
+```bash
+python3 scripts/travel_assistant.py --hotel "天津瑞湾开元名都" --lat 39.021567 --lon 117.745689 --query "周边有什么好吃的推荐"
+# → 自动识别分类，返回HTML报告
+```
+
+---
+
+## 软性分组筛选 v3.2 核心设计
+
+### 设计哲学
+
+> **AI用精选保证准确，决策者看分组看到完整格局**
+
+| 分组 | 用途 | 参与AI调价？ |
+|------|------|--------------|
+| **强相关竞品** | AI调价分析使用 | ✅ 是 |
+| **外资品牌竞品** | 市场分层观测 | ❌ 否 |
+| **内资品牌竞品** | 市场分层观测 | ❌ 否 |
+| **低价位区（<0.7×目标）** | 价格分层观测 | ❌ 否 |
+| **中价位区（0.7~1.3×目标）** | 价格分层观测 | ❌ 否 |
+| **高价位区 (>1.3×目标)** | 价格分层观测 | ❌ 否 |
+
+### 自动半径扩展
+
+- 如果初始半径（默认5km）找不到≥3家强相关竞品，自动扩展：
+- 5km → 10km → 15km
+- 解决度假酒店周边竞品太少的问题
 
 ---
 
 ## 多维评分体系
 
 ```
-竞品得分 = 距离分(30%) × 星级分(30%) × 品牌分(20%) × 价格分(20%)
+竞品得分 = 距离分(30%) × 星级分(30%) × 品牌分(20%) × 价格分(20%) + occupancy加分
 
 距离分：≤1km=100分, ≤3km=80分, ≤5km=60分, >5km=0分
 星级分：同档=100, 相邻=60, 相差2档=20, 未知=50
@@ -153,6 +102,41 @@ Step 4: 三档定价输出
 
 ---
 
+## 📤 发布方式
+
+### 方式一：GitHub Pages 静态网页（公开可访问）
+
+```bash
+# 批量生成到docs目录
+python scripts/generate_batch_reports.py --input examples/three_hotels.json --output docs --api-key YOUR_KEY
+
+# 提交到GitHub，自动通过GitHub Pages发布
+git add docs/ && git commit -m "update reports" && git push
+```
+
+**特点：**
+- ✅ 每家酒店生成独立HTML文件，文件名唯一（按酒店名slug），**不会相互覆盖**
+- ✅ 自动生成README索引页，包含所有报告链接
+- ✅ GitHub Pages免费托管，任何人都可以访问
+
+### 方式二：飞书云文档（德胧内部同事使用）
+
+```bash
+# 设置飞书凭证（需要开发者后台创建应用）
+export FEISHU_APP_ID="你的AppID"
+export FEISHU_APP_SECRET="你的AppSecret"
+
+# 批量发布到飞书云空间
+python scripts/publish_to_feishu.py --input output/README.md --folder-token "你的文件夹token"
+```
+
+**特点：**
+- ✅ 直接创建为飞书云文档，**无GitHub Pages缓存延迟**，打开就是最新
+- ✅ 同名文档会自动创建新版本，不会覆盖历史
+- ✅ 权限继承自飞书云文件夹，方便德胧内部同事协作查看
+
+---
+
 ## 定时任务（每日监测）
 
 ```bash
@@ -167,10 +151,23 @@ Step 4: 三档定价输出
 
 ---
 
+## v3.2 更新日志
+
+| 功能 | 说明 |
+|------|------|
+| **软性分组筛选** | 强相关用于AI调价，全部分组用于市场观测，不丢失潜在信息 |
+| **自动半径扩展** | 5km→10km→15km，解决度假村竞品太少问题 |
+| **品牌分组展示** | 外资/内资分开统计，方便观察市场格局 |
+| **价格区间分组** | 低/中/高价位各选最多10家展示，完整市场分层 |
+| **飞书云发布** | 直接推送到飞书云文档，无缓存延迟 |
+| **🧳 出行AI伴侣** | 自然语言查询周边美食/交通/景点 |
+
+---
+
 ## GitHub
 
 - 仓库：https://github.com/chaoliuzhu65-tech/hotel-compete-report
-- v3.0发布：https://github.com/chaoliuzhu65-tech/hotel-compete-report/releases/tag/v1.0.0
+- v3.2发布：https://github.com/chaoliuzhu65-tech/hotel-compete-report/releases/tag/v3.2
 
 ## 依赖
 
@@ -179,4 +176,5 @@ amap-sdk>=0.1.0
 pandas
 requests
 openai（用于AI调价建议）
+lark-sdk（飞书云文档发布需要）
 ```
