@@ -183,7 +183,8 @@ class ReportGenerator:
 
         candidates = []
         for h in nearby_hotels:
-            if h.name != hotel_info["name"]:  # 排除自己
+            # 排除自己（名称完全匹配排除，部分匹配保留）
+            if h.name.strip() != hotel_info["name"].strip():
                 poi = HotelPOI(
                     name=h.name,
                     location=f"{h.lon},{h.lat}",
@@ -192,6 +193,7 @@ class ReportGenerator:
                     distance_km=h.distance_km
                 )
                 candidates.append(poi)
+        print(f"   排除自身后剩余 {len(candidates)} 家候选")
 
         # 3. v2筛选
         config = get_config_for_scenario(scenario) if scenario != "default" else FilterConfig()

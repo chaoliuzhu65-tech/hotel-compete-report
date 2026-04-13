@@ -1,0 +1,20 @@
+{
+  "version": "3.2",
+  "generated": "2026-04-13",
+  "data_source": "飞猪Fliggy+高德地图双引擎实时采集",
+  "description": "full test - 天津瑞湾开元名都大酒店完整功能测试",
+  "hotels": [
+    {
+      "name": "天津瑞湾开元名都大酒店",
+      "brand": "开元名都",
+      "star": "五星级/豪华型",
+      "weekday_price": 443,
+      "target_date": "2026-05-01",
+      "lat": 39.000893,
+      "lon": 117.710212,
+      "district": "天津市滨海新区",
+      "max_distance_km": 5,
+      "scenario": "downtown"
+    }
+  ]
+}
