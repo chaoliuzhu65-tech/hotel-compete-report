@@ -1,0 +1,44 @@
+{
+  "version": "3.1",
+  "generated": "2026-04-13",
+  "data_source": "飞猪Fliggy+高德地图双引擎实时采集",
+  "description": "德胧集团开元系三家酒店五一竞品价格分析报告",
+  "hotels": [
+    {
+      "name": "杭州开元名都大酒店",
+      "brand": "开元名都",
+      "star": "五星级/豪华型",
+      "weekday_price": 458,
+      "target_date": "2026-05-01",
+      "lat": 30.3186,
+      "lon": 120.2138,
+      "district": "杭州市萧山区",
+      "max_distance_km": 5,
+      "scenario": "downtown"
+    },
+    {
+      "name": "宁波开元名都大酒店",
+      "brand": "开元名都",
+      "star": "五星级/豪华型",
+      "weekday_price": 428,
+      "target_date": "2026-05-01",
+      "lat": 29.8586,
+      "lon": 121.5234,
+      "district": "宁波市鄞州区",
+      "max_distance_km": 5,
+      "scenario": "downtown"
+    },
+    {
+      "name": "千岛湖开元度假村",
+      "brand": "开元度假村",
+      "star": "五星级/豪华型",
+      "weekday_price": 580,
+      "target_date": "2026-05-01",
+      "lat": 29.621,
+      "lon": 118.9716,
+      "district": "杭州市淳安县",
+      "max_distance_km": 8,
+      "scenario": "resort"
+    }
+  ]
+}
