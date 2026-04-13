@@ -23,7 +23,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
 class FeishuClient:
-    """飞书API客户端（飞书云文档创建）"""
+    """飞书API客户端（飞书云文档创建）- 正确块格式"""
 
     def __init__(self, app_id: str, app_secret: str):
         self.app_id = app_id
@@ -46,16 +46,43 @@ class FeishuClient:
         raise ValueError(f"get token failed: {data}")
 
     def create_doc(self, title: str, markdown: str, folder_token: str = None) -> dict:
-        """创建飞书云文档"""
+        """
+        创建飞书云文档 - 正确格式
+        飞书API要求:
+        - content 是 JSON array of blocks
+        - 每个block是 {"type": "markdown", "content": "..."}
+        """
         token = self.get_access_token()
         url = "https://open.feishu.cn/open-apis/docx/v1/documents"
 
-        # 转换markdown到飞书文档格式
+        # 将markdown按行分割，每个段落一个block
+        lines = markdown.split('\n')
+        blocks = []
+        current_paragraph = []
+
+        for line in lines:
+            if line.strip() == '':
+                if current_paragraph:
+                    content = '\n'.join(current_paragraph)
+                    blocks.append({
+                        "type": "markdown",
+                        "content": content
+                    })
+                    current_paragraph = []
+            else:
+                current_paragraph.append(line)
+
+        # 最后一段
+        if current_paragraph:
+            content = '\n'.join(current_paragraph)
+            blocks.append({
+                "type": "markdown",
+                "content": content
+            })
+
         body = {
             "title": title,
-            "content": json.dumps([
-                {"tag": "markdown", "text": markdown}
-            ]),
+            "content": json.dumps(blocks),
         }
         if folder_token:
             body["folder_token"] = folder_token
@@ -146,14 +173,7 @@ def main():
             if result.get("code") == 0:
                 if "data" in result and "document" in result["data"] and "document_id" in result["data"]["document"]:
                     doc_id = result['data']['document']['document_id']
-                    doc_url = f"https://bytedance.feishu.cn/docx/{doc_id}"
-                    print(f"   ✅ 成功: {doc_url}")
-                    created_urls.append({
-                        "name": report['name'],
-                        "url": doc_url,
-                    })
-                elif "data" in result and "url" in result["data"]:
-                    doc_url = result['data']['url']
+                    doc_url = f"https://www.feishu.cn/docx/{doc_id}"
                     print(f"   ✅ 成功: {doc_url}")
                     created_urls.append({
                         "name": report['name'],
