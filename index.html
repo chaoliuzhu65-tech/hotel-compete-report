@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <title>瑞湾五一竞品调价报告 v4.0</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: { 50: '#eff6ff', 500: '#3b82f6', 900: '#1e3a8a' }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif; }
+    .card { background: white; border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    .badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+    .badge-green { background: #dcfce7; color: #166534; }
+    .badge-red { background: #fee2e2; color: #991b1b; }
+    .badge-yellow { background: #fef9c3; color: #854d0e; }
+    .badge-gray { background: #f3f4f6; color: #6b7280; }
+    .price-tag { font-size: 2rem; font-weight: 800; line-height: 1; }
+    .increase-up { color: #dc2626; }
+    .increase-down { color: #16a34a; }
+    @media (max-width: 640px) {
+      .price-tag { font-size: 1.5rem; }
+      .hide-mobile { display: none; }
+    }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen pb-12">
+
+  <!-- Header -->
+  <header class="bg-gradient-to-r from-blue-900 to-blue-700 text-white px-4 py-6 sticky top-0 z-50 shadow-lg">
+    <div class="max-w-3xl mx-auto">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-blue-200 text-xs uppercase tracking-wider mb-1">天津瑞湾开元名都酒店 · 五一假期</p>
+          <h1 class="text-xl font-bold leading-tight">竞品调价分析报告</h1>
+          <p class="text-blue-200 text-sm mt-1" id="update-time">数据更新时间：加载中…</p>
+        </div>
+        <div class="text-right">
+          <span class="badge bg-blue-500 text-white text-xs">v4.0</span>
+          <p class="text-blue-200 text-xs mt-1 hide-mobile">双重校准模型</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-3xl mx-auto px-4 pt-6 space-y-4">
+
+    <!-- 关键结论卡片 -->
+    <section class="card p-5 border-l-4 border-blue-600">
+      <h2 class="text-sm font-semibold text-blue-900 uppercase tracking-wide mb-3">核心发现</h2>
+      <div class="grid grid-cols-3 gap-3">
+        <div class="text-center">
+          <div class="price-tag text-blue-600" id="current-price">¥557</div>
+          <p class="text-xs text-gray-500 mt-1">当前五一价</p>
+        </div>
+        <div class="text-center">
+          <div class="text-2xl font-bold text-red-500" id="price-gap">+¥163</div>
+          <p class="text-xs text-gray-500 mt-1">建议加价幅度</p>
+        </div>
+        <div class="text-center">
+          <div class="text-2xl font-bold text-green-600" id="rev-increase">+14.1%</div>
+          <p class="text-xs text-gray-500 mt-1">收益增幅</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 建议定价 -->
+    <section class="card p-5">
+      <h2 class="text-base font-bold text-gray-900 mb-4">📊 五一定价建议（双重校准模型）</h2>
+      <div class="grid grid-cols-3 gap-3 mb-4">
+        <div class="bg-gray-50 rounded-xl p-4 text-center border-2 border-transparent hover:border-blue-200 transition cursor-pointer" id="tier-conservative">
+          <p class="text-xs text-gray-500 mb-1">保守</p>
+          <div class="price-tag text-gray-700" id="price-conservative">¥650</div>
+          <p class="text-xs text-gray-400 mt-1">+81.6%</p>
+          <p class="text-xs text-gray-500 mt-2 hide-mobile">比希尔顿欢朋低¥270</p>
+        </div>
+        <div class="bg-blue-50 rounded-xl p-4 text-center border-2 border-blue-500" id="tier-recommended">
+          <span class="badge badge-green text-xs mb-1">推荐</span>
+          <div class="price-tag text-blue-600" id="price-recommended">¥720</div>
+          <p class="text-xs text-blue-400 mt-1">+101.1%</p>
+          <p class="text-xs text-gray-500 mt-2 hide-mobile">比希尔顿欢朋低¥200</p>
+        </div>
+        <div class="bg-gray-50 rounded-xl p-4 text-center border-2 border-transparent hover:border-blue-200 transition cursor-pointer" id="tier-aggressive">
+          <p class="text-xs text-gray-500 mb-1">激进</p>
+          <div class="price-tag text-gray-700" id="price-aggressive">¥780</div>
+          <p class="text-xs text-gray-400 mt-1">+117.9%</p>
+          <p class="text-xs text-gray-500 mt-2 hide-mobile">比希尔顿欢朋低¥140</p>
+        </div>
+      </div>
+      <div class="bg-amber-50 border border-amber-200 rounded-xl p-3">
+        <p class="text-sm text-amber-800">
+          <strong>⚠️ 竞品分层说明：</strong>排除国际联号（洲际/万豪/皇冠假日），以希尔顿欢朋¥920为最近参照。瑞湾¥720仍有22%价格优势。
+        </p>
+      </div>
+    </section>
+
+    <!-- 阶梯定价 -->
+    <section class="card p-5">
+      <h2 class="text-base font-bold text-gray-900 mb-3">📅 阶梯定价（按日期）</h2>
+      <div class="space-y-2" id="tier-pricing">
+        <!-- 动态填充 -->
+      </div>
+    </section>
+
+    <!-- 5KM竞品价格表 -->
+    <section class="card p-5">
+      <h2 class="text-base font-bold text-gray-900 mb-3">🏨 5KM竞品五一价格（飞猪实时）</h2>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="text-left text-gray-500 border-b">
+              <th class="pb-2 font-medium">酒店</th>
+              <th class="pb-2 font-medium text-right hide-mobile">平日</th>
+              <th class="pb-2 font-medium text-right">五一价</th>
+              <th class="pb-2 font-medium text-right">涨幅</th>
+              <th class="pb-2 font-medium text-center hide-mobile">是否可比</th>
+            </tr>
+          </thead>
+          <tbody id="competitor-table">
+            <!-- 动态填充 -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 涨幅对比图 -->
+    <section class="card p-5">
+      <h2 class="text-base font-bold text-gray-900 mb-3">📈 涨幅对比</h2>
+      <div class="h-48">
+        <canvas id="increaseChart"></canvas>
+      </div>
+    </section>
+
+    <!-- 绝对价格对比图 -->
+    <section class="card p-5">
+      <h2 class="text-base font-bold text-gray-900 mb-3">💰 绝对价格对比（5KM内豪华型）</h2>
+      <div class="h-48">
+        <canvas id="priceChart"></canvas>
+      </div>
+    </section>
+
+    <!-- 双重校准逻辑 -->
+    <section class="card p-5">
+      <h2 class="text-base font-bold text-gray-900 mb-3">🔍 双重校准分析</h2>
+      <div class="space-y-3">
+        <div class="p-3 bg-green-50 border border-green-200 rounded-xl">
+          <p class="text-sm font-semibold text-green-800">✅ 涨幅校准：合理</p>
+          <p class="text-sm text-green-700 mt-1">瑞湾涨幅+55.6% vs 豪华型竞品均值+51.0%，处于合理区间</p>
+        </div>
+        <div class="p-3 bg-red-50 border border-red-200 rounded-xl">
+          <p class="text-sm font-semibold text-red-800">🔴 绝对值校准：严重偏低</p>
+          <p class="text-sm text-red-700 mt-1">瑞湾¥557是5KM内最便宜！比最近竞品（希尔顿欢朋¥920）便宜¥363，比豪华型竞品最低（万豪行政公寓¥954）便宜¥397</p>
+        </div>
+        <div class="p-3 bg-blue-50 border border-blue-200 rounded-xl">
+          <p class="text-sm font-semibold text-blue-800">💡 结论：以绝对值校准为主</p>
+          <p class="text-sm text-blue-700 mt-1">五一客源以OTA搜索为主，客人比较绝对价格而非涨幅。建议定价¥650-720</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 收益测算 -->
+    <section class="card p-5">
+      <h2 class="text-base font-bold text-gray-900 mb-3">💰 收益测算（200间房×5天）</h2>
+      <div class="grid grid-cols-2 gap-3" id="revenue-table">
+        <!-- 动态填充 -->
+      </div>
+    </section>
+
+    <!-- 数据来源 -->
+    <section class="card p-5">
+      <h2 class="text-base font-bold text-gray-900 mb-3">📡 数据来源</h2>
+      <div class="space-y-2 text-sm text-gray-600">
+        <p>• 数据来源：飞猪 FlyAI 实时挂牌价（2026-04-13 采集）</p>
+        <p>• 瑞湾坐标：39.000893°N, 117.710212°E（新港一号路2527号）</p>
+        <p>• 竞品筛选：5KM半径内、4-5星级、国际联号已排除</p>
+        <p>• 适用假期：五一黄金周（2026年4月30日-5月5日）</p>
+        <p>• 模型版本：v4.0（双重校准·绝对值优先）</p>
+      </div>
+    </section>
+
+    <!-- 更新按钮 -->
+    <div class="text-center pt-2">
+      <button onclick="refreshData()" class="bg-blue-600 text-white px-6 py-3 rounded-full text-sm font-semibold shadow-lg active:scale-95 transition">
+        🔄 刷新最新数据
+      </button>
+    </div>
+
+  </main>
+
+  <footer class="text-center text-gray-400 text-xs py-8 mt-8">
+    <p>天津瑞湾开元名都酒店 · 竞品调价分析报告 v4.0</p>
+    <p class="mt-1">Powered by FlyAI + 双重校准定价算法</p>
+  </footer>
+
+<script>
+// ============ 数据加载 ============
+let reportData = null;
+
+async function loadData() {
+  try {
+    const res = await fetch('data.json?_=' + Date.now());
+    reportData = await res.json();
+    renderAll(reportData);
+    document.getElementById('update-time').textContent = 
+      '数据更新时间：' + reportData.generated;
+  } catch(e) {
+    console.error('Failed to load data.json', e);
+    document.getElementById('update-time').textContent = 
+      '数据加载失败，请刷新';
+  }
+}
+
+function renderAll(d) {
+  renderRecommendation(d);
+  renderTierPricing(d);
+  renderCompetitorTable(d);
+  renderRevenueTable(d);
+  renderCharts(d);
+}
+
+function renderRecommendation(d) {
+  const r = d.analysis;
+  const cur = d.ruiwan;
+  document.getElementById('current-price').textContent = '¥' + cur.holiday_price;
+  document.getElementById('price-conservative').textContent = '¥' + r.recommendation.conservative;
+  document.getElementById('price-recommended').textContent = '¥' + r.recommendation.recommended;
+  document.getElementById('price-aggressive').textContent = '¥' + r.recommendation.aggressive;
+  
+  const recommended = r.recommendation.recommended;
+  const delta = recommended - cur.holiday_price;
+  const pct = ((delta / cur.holiday_price) * 100).toFixed(1);
+  document.getElementById('price-gap').textContent = '+¥' + delta;
+  document.getElementById('price-gap').className = 'text-2xl font-bold ' + (delta > 0 ? 'text-red-500' : 'text-green-500');
+  
+  const revInc = (((recommended * 0.75 - cur.holiday_price * 0.85) / (cur.holiday_price * 0.85)) * 100).toFixed(1);
+  document.getElementById('rev-increase').textContent = '+' + revInc + '%';
+}
+
+function renderTierPricing(d) {
+  const tp = d.analysis.tier_pricing;
+  const el = document.getElementById('tier-pricing');
+  const labels = {
+    '4/30': '4/30 周三',
+    '5/1': '5/1 周四',
+    '5/2': '5/2 周五',
+    '5/3': '5/3 周六',
+    '5/4': '5/4 周日',
+    '5/5': '5/5 周一'
+  };
+  el.innerHTML = Object.entries(tp).map(([k, v]) => {
+    const isPeak = ['5/1','5/2'].includes(k);
+    const bg = isPeak ? 'bg-blue-50 border-blue-300' : 'bg-gray-50 border-gray-200';
+    return `<div class="flex items-center justify-between p-3 rounded-xl border ${bg}">
+      <div>
+        <span class="font-semibold text-gray-800">${labels[k]}</span>
+        <span class="text-xs text-gray-500 ml-2">${v.note}</span>
+      </div>
+      <span class="price-tag ${isPeak ? 'text-blue-600' : 'text-gray-700'}" style="font-size:1.25rem">¥${v.price}</span>
+    </div>`;
+  }).join('');
+}
+
+function renderCompetitorTable(d) {
+  const tbody = document.getElementById('competitor-table');
+  const sorted = [...d.competitors].sort((a,b) => a.holiday - b.holiday);
+  const rw = d.ruiwan;
+  let html = '';
+  
+  // 本店
+  const rwIncPct = rw.increase_pct;
+  html += `<tr class="border-b bg-blue-50">
+    <td class="py-3 font-bold text-blue-900">★ ${rw.name}</td>
+    <td class="py-3 text-right text-gray-600 hide-mobile">¥${rw.weekday_price}</td>
+    <td class="py-3 text-right font-bold text-blue-700">¥${rw.holiday_price}</td>
+    <td class="py-3 text-right font-bold text-blue-600">+${rwIncPct}%</td>
+    <td class="py-3 text-center hide-mobile"><span class="badge badge-green">本店</span></td>
+  </tr>`;
+  
+  // 竞品
+  sorted.forEach(c => {
+    const inc = c.increase_pct;
+    const incColor = inc > 100 ? 'text-red-500' : inc > 50 ? 'text-amber-500' : 'text-gray-500';
+    const badgeClass = c.recommend_exclude ? 'badge-gray' : 'badge-yellow';
+    const badgeText = c.recommend_exclude ? '已排除' : '可比';
+    html += `<tr class="border-b">
+      <td class="py-2.5 text-gray-700 text-sm">
+        ${c.name}
+        <span class="text-xs text-gray-400 ml-1">${c.star}</span>
+        ${c.brand !== '国内' ? `<span class="text-xs text-gray-400 ml-1">(${c.brand})</span>` : ''}
+      </td>
+      <td class="py-2.5 text-right text-gray-500 text-sm hide-mobile">¥${c.weekday}</td>
+      <td class="py-2.5 text-right font-semibold text-gray-800">¥${c.holiday}</td>
+      <td class="py-2.5 text-right ${incColor}">+${inc}%</td>
+      <td class="py-2.5 text-center hide-mobile"><span class="badge ${badgeClass}">${badgeText}</span></td>
+    </tr>`;
+  });
+  tbody.innerHTML = html;
+}
+
+function renderRevenueTable(d) {
+  const rw = d.ruiwan;
+  const rec = d.analysis.recommendation.recommended;
+  const rooms = 200, days = 5;
+  const scenarios = [
+    {label: '当前价¥'+rw.holiday_price, price: rw.holiday_price, occ: 0.85, note: '当前'},
+    {label: '建议价¥'+rec, price: rec, occ: 0.85, note: '建议+85%'},
+    {label: '建议价¥'+rec, price: rec, occ: 0.75, note: '建议+75%'},
+    {label: '建议价¥'+rec, price: rec, occ: 0.70, note: '建议+70%'},
+    {label: '建议价¥'+rec, price: rec, occ: 0.65, note: '盈亏平衡'},
+  ];
+  
+  const el = document.getElementById('revenue-table');
+  el.innerHTML = scenarios.map(s => {
+    const rev = s.price * rooms * s.occ * days;
+    const isBest = s.price === rec && s.occ === 0.75;
+    const bg = isBest ? 'bg-blue-50 border-blue-300' : 'bg-gray-50 border-gray-200';
+    return `<div class="rounded-xl border p-3 ${bg}">
+      <p class="text-xs text-gray-500">${s.label} × ${Math.round(s.occ*100)}%</p>
+      <p class="text-lg font-bold text-gray-800">¥${(rev/10000).toFixed(1)}万</p>
+      <p class="text-xs text-gray-400">${s.note}</p>
+    </div>`;
+  }).join('');
+}
+
+function renderCharts(d) {
+  // 只取5KM内竞品 + 瑞湾（用于图表）
+  const comp5km = [...d.competitors.filter(c => c.distance_km <= 5), {
+    name: d.ruiwan.name, holiday: d.ruiwan.holiday_price,
+    star: d.ruiwan.star, isRuiwan: true
+  }].sort((a,b) => a.holiday - b.holiday);
+  
+  const labels = comp5km.map(c => c.name.replace('天津','').substring(0,6));
+  const prices = comp5km.map(c => c.holiday);
+  const ruiwanIdx = comp5km.findIndex(c => c.isRuiwan);
+  const bgColors = comp5km.map((c,i) => i === ruiwanIdx ? 'rgba(59,130,246,1)' : 'rgba(156,163,175,0.7)');
+
+  // 价格柱状图
+  const priceCtx = document.getElementById('priceChart').getContext('2d');
+  if (window.priceChartInstance) window.priceChartInstance.destroy();
+  window.priceChartInstance = new Chart(priceCtx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label: '五一价格(¥)',
+        data: prices,
+        backgroundColor: bgColors,
+        borderRadius: 8,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: {
+        callbacks: { label: ctx => `¥${ctx.raw}` }
+      }},
+      scales: {
+        y: { beginAtZero: true, ticks: { callback: v => '¥'+v } }
+      }
+    }
+  });
+
+  // 涨幅柱状图
+  const incData = [...d.competitors.filter(c => c.distance_km <= 5), d.ruiwan].map(c => c.increase_pct);
+  const incLabels = [...d.competitors.filter(c => c.distance_km <= 5), d.ruiwan]
+    .sort((a,b) => a.increase_pct - b.increase_pct)
+    .map(c => c.name.replace('天津','').substring(0,6));
+  const incBgs = incData.map((v,i) => v > 100 ? 'rgba(220,38,38,0.7)' : 'rgba(59,130,246,0.7)');
+  
+  const incCtx = document.getElementById('increaseChart').getContext('2d');
+  if (window.incChartInstance) window.incChartInstance.destroy();
+  window.incChartInstance = new Chart(incCtx, {
+    type: 'bar',
+    data: {
+      labels: incLabels,
+      datasets: [{
+        label: '涨幅(%)',
+        data: incData.sort((a,b)=>a-b),
+        backgroundColor: incBgs.sort((a,b)=>a-b),
+        borderRadius: 8,
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: {
+        callbacks: { label: ctx => `+${ctx.raw}%` }
+      }},
+      scales: {
+        x: { beginAtZero: true, ticks: { callback: v => v+'%' } }
+      }
+    }
+  });
+}
+
+async function refreshData() {
+  document.getElementById('update-time').textContent = '正在刷新...';
+  await loadData();
+  document.getElementById('update-time').textContent += ' ✓';
+  setTimeout(() => {
+    document.getElementById('update-time').textContent = 
+      '数据更新时间：' + (reportData?.generated || '刚刚');
+  }, 2000);
+}
+
+document.addEventListener('DOMContentLoaded', loadData);
+</script>
+</body>
+</html>
