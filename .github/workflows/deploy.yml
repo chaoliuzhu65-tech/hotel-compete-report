@@ -3,57 +3,44 @@ name: Deploy Hotel Report to GitHub Pages
 on:
   push:
     branches: [main]
-  schedule:
-    # 每天早上 06:00 更新数据（北京时间）
-    - cron: '0 22 * * *'  # UTC 22:00 = 北京 06:00
   workflow_dispatch:
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+      contents: read
     steps:
       - uses: actions/checkout@v4
       
-      - name: Fetch latest pricing data
+      - name: Verify index.html exists
         run: |
-          # 使用 FlyAI 获取最新竞品价格
-          echo "Fetching competitor data..."
-          npx @fly-ai/flyai-cli search-hotel \
-            --dest-name "天津滨海新区塘沽" \
-            --hotel-stars "4,5" \
-            --check-in-date 2026-05-01 \
-            --check-out-date 2026-05-05 \
-            --sort price_desc >> competitor_raw.json
-          
-      - name: Update data.json
-        run: |
-          echo "Updating data timestamp..."
-          TIMESTAMP=$(date +%Y-%m-%dT%H:%M:%S)
-          echo "Generated: $TIMESTAMP"
-          # 数据已在上面的步骤获取，这里更新时间戳
-          python3 -c "
-import json
-with open('data.json') as f:
-    d = json.load(f)
-d['generated'] = '$TIMESTAMP'
-with open('data.json', 'w') as f:
-    json.dump(d, f, ensure_ascii=False, indent=2)
-"
-
-      - name: Generate report
-        run: |
-          echo "Report auto-generated from index.html + data.json"
+          echo "Files in repo:"
+          ls -la
+          if [ -f index.html ]; then
+            echo "✅ index.html found"
+          else
+            echo "❌ index.html NOT found"
+            exit 1
+          fi
+          if [ -f data.json ]; then
+            echo "✅ data.json found"
+          else
+            echo "❌ data.json NOT found"
+            exit 1
+          fi
 
       - name: Setup Pages
-        if: github.ref == 'refs/heads/main'
         uses: actions/configure-pages@v4
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '.'
+          path: .
 
       - name: Deploy to GitHub Pages
-        if: github.ref == 'refs/heads/main'
         id: deployment
         uses: actions/deploy-pages@v4
+
