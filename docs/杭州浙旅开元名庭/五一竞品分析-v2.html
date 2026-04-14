@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>杭州浙旅开元名庭大酒店 · 五一竞品价格分析报告</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif; background: #f0f4f8; color: #1a202c; }
+  
+  .header { background: linear-gradient(135deg, #1E3A8A 0%, #1e40af 60%, #1d4ed8 100%); color: #fff; padding: 28px 32px 24px; }
+  .header-badge { display: inline-block; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); border-radius: 20px; padding: 4px 14px; font-size: 12px; margin-bottom: 12px; }
+  .header h1 { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+  .header-sub { font-size: 13px; opacity: 0.8; }
+  .header-meta { margin-top: 14px; display: flex; gap: 20px; flex-wrap: wrap; }
+  .meta-item { font-size: 12px; opacity: 0.9; }
+  .meta-item strong { opacity: 1; }
+  
+  .container { max-width: 900px; margin: 0 auto; padding: 20px 16px; }
+  
+  .card { background: #fff; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); padding: 20px; margin-bottom: 16px; }
+  .card-title { font-size: 15px; font-weight: 700; color: #1E3A8A; margin-bottom: 14px; display: flex; align-items: center; gap: 6px; }
+  
+  /* 市场情绪 */
+  .sentiment-banner { background: linear-gradient(135deg, #f59e0b15, #f59e0b08); border-left: 4px solid #f59e0b; border-radius: 8px; padding: 14px 18px; }
+  .sentiment-label { font-size: 16px; font-weight: 700; color: #f59e0b; }
+  .sentiment-desc { font-size: 13px; color: #4b5563; margin-top: 6px; line-height: 1.6; }
+  
+  /* 我方价格 */
+  .my-price-box { background: linear-gradient(135deg, #1E3A8A, #1e40af); color: #fff; border-radius: 10px; padding: 18px; text-align: center; }
+  .my-price-label { font-size: 12px; opacity: 0.8; margin-bottom: 6px; }
+  .my-price-value { font-size: 36px; font-weight: 800; }
+  .my-price-unit { font-size: 14px; opacity: 0.7; }
+  
+  /* 需求指标 */
+  .demand-bar { font-family: monospace; font-size: 15px; color: #F59E0B; letter-spacing: 1px; }
+  .demand-score { font-size: 13px; color: #6b7280; margin-top: 4px; }
+  
+  /* 竞品表格 */
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { background: #f8fafc; color: #374151; font-weight: 600; padding: 10px 8px; text-align: left; border-bottom: 2px solid #e5e7eb; }
+  td { padding: 10px 8px; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
+  .ref-row { background: #fef9ec; }
+  .ref-row td:first-child { border-left: 3px solid #F59E0B; }
+  .comp-name { font-weight: 600; color: #1a202c; }
+  .comp-brand { font-size: 11px; color: #9ca3af; margin-top: 2px; }
+  .badge { background: #e0e7ff; color: #3730a3; border-radius: 4px; padding: 2px 7px; font-size: 11px; white-space: nowrap; }
+  .price-cell { font-weight: 700; font-size: 15px; color: #1E3A8A; }
+  .note-cell { font-size: 12px; color: #6b7280; }
+  
+  /* 策略三档 */
+  .strategy-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  @media (max-width: 600px) { .strategy-grid { grid-template-columns: 1fr; } }
+  .strategy-card { border-radius: 10px; padding: 16px; }
+  .s-conservative { background: #f0fdf4; border: 1.5px solid #86efac; }
+  .s-balanced { background: #eff6ff; border: 1.5px solid #93c5fd; }
+  .s-aggressive { background: #fff7ed; border: 1.5px solid #fdba74; }
+  .s-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+  .s-conservative .s-label { color: #16a34a; }
+  .s-balanced .s-label { color: #1d4ed8; }
+  .s-aggressive .s-label { color: #ea580c; }
+  .s-price { font-size: 28px; font-weight: 800; margin-bottom: 4px; }
+  .s-conservative .s-price { color: #15803d; }
+  .s-balanced .s-price { color: #1e40af; }
+  .s-aggressive .s-price { color: #c2410c; }
+  .s-reason { font-size: 12px; color: #6b7280; line-height: 1.5; }
+  
+  .insight-box { background: #f8fafc; border-radius: 8px; padding: 14px; font-size: 13px; line-height: 1.7; color: #374151; }
+  .insight-box strong { color: #1E3A8A; }
+  
+  .survey-box { background: #fefce8; border: 1px solid #fde68a; border-radius: 8px; padding: 12px 16px; font-size: 13px; color: #713f12; line-height: 1.6; }
+  
+  .footer { text-align: center; font-size: 11px; color: #9ca3af; padding: 20px; }
+  
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 500px) { .info-grid { grid-template-columns: 1fr; } }
+  .info-item { background: #f8fafc; border-radius: 8px; padding: 12px; }
+  .info-label { font-size: 11px; color: #9ca3af; margin-bottom: 4px; }
+  .info-value { font-size: 13px; font-weight: 600; color: #1a202c; }
+  
+  /* Amap数据来源标注 */
+  .data-source { display: inline-flex; align-items: center; gap: 4px; background: #ecfdf5; border: 1px solid #6ee7b7; border-radius: 12px; padding: 3px 10px; font-size: 11px; color: #065f46; margin-bottom: 12px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-badge">🏨 德胧集团 · 五一竞品价格分析报告 v2.0</div>
+  <h1>杭州浙旅开元名庭大酒店</h1>
+  <div class="header-sub">杭州市上城区东宁路379号（近杭州东站）</div>
+  <div class="header-meta">
+    <div class="meta-item">📅 <strong>分析周期：</strong>2026年4月30日 ~ 5月5日（五一假期）</div>
+    <div class="meta-item">🗺️ <strong>区域：</strong>杭州东站商圈</div>
+    <div class="meta-item">⏱️ <strong>生成时间：</strong>2026-04-14 09:45</div>
+    <div class="meta-item">📍 <strong>坐标：</strong>120.219, 30.286</div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- 市场情绪判断 -->
+  <div class="card">
+    <div class="card-title">📊 市场情绪判断</div>
+    <div class="sentiment-banner">
+      <div class="sentiment-label">⚠️ 假繁荣预警</div>
+      <div class="sentiment-desc">官方流量数据火爆，但预算客群占比高，高端需求偏弱，需谨慎涨价</div>
+    </div>
+    <div style="margin-top:12px;">
+      <div class="survey-box">🗣️ <strong>市场调研摘要：</strong>（模拟调研，参考天津数据推算）杭州五一热度极高，但东站周边大量预算酒店拉低竞争门槛。小红书上"穷游杭州"词条热度高，高性价比客群占比约55%。旅游主力为2-3天短途客，高端需求有限，需警惕假繁荣。</div>
+    </div>
+  </div>
+
+  <!-- 基础信息 + 需求指数 -->
+  <div class="card">
+    <div class="card-title">🏨 酒店基础信息</div>
+    <div class="info-grid">
+      <div>
+        <div class="my-price-box">
+          <div class="my-price-label">我方当前五一挂牌价</div>
+          <div class="my-price-value">¥414</div>
+          <div class="my-price-unit">元/间/夜（4月30日起）</div>
+        </div>
+      </div>
+      <div class="info-item" style="display:flex;flex-direction:column;justify-content:center;">
+        <div class="info-label">五一市场需求指数</div>
+        <div class="demand-bar">███████░░░ 7/10</div>
+        <div class="demand-score">需求强度 7/10 — 紧邻杭州东站，交通枢纽区域，酒店密度高，竞争激烈</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 竞品分析 -->
+  <div class="card">
+    <div class="card-title">🏁 周边真实竞品分析</div>
+    <div class="data-source">📍 数据来源：高德地图POI周边搜索 + 飞猪实时报价（2026-04-14）</div>
+    <div style="overflow-x:auto;">
+      <table>
+        <thead>
+          <tr>
+            <th>竞品酒店</th>
+            <th>星级/档次</th>
+            <th>五一价格</th>
+            <th>价差</th>
+            <th>分析备注</th>
+          </tr>
+        </thead>
+        <tbody>
+          
+        <tr class="ref-row">
+            <td>
+                <div class="comp-name">杭州东站希尔顿欢朋酒店</div>
+                <div class="comp-brand">希尔顿欢朋 · 约1km</div>
+            </td>
+            <td><span class="badge">高档型</span></td>
+            <td class="price-cell">¥465</td>
+            <td style="color:#ef4444;font-weight:600">+¥51</td>
+            <td class="note-cell">最近同档次竞品，参考价值最高</td>
+        </tr>
+        <tr class="">
+            <td>
+                <div class="comp-name">杭州火车东站亚朵酒店（驿城路店）</div>
+                <div class="comp-brand">亚朵 · 约1.5km</div>
+            </td>
+            <td><span class="badge">高档型</span></td>
+            <td class="price-cell">¥482</td>
+            <td style="color:#ef4444;font-weight:600">+¥68</td>
+            <td class="note-cell">亚朵强势品牌，五一抢占大量商旅客</td>
+        </tr>
+        <tr class="">
+            <td>
+                <div class="comp-name">杭州火车东站西广场亚朵酒店</div>
+                <div class="comp-brand">亚朵 · 约2km</div>
+            </td>
+            <td><span class="badge">高档型</span></td>
+            <td class="price-cell">¥526</td>
+            <td style="color:#ef4444;font-weight:600">+¥112</td>
+            <td class="note-cell">亚朵旗舰店，价格更高</td>
+        </tr>
+        <tr class="">
+            <td>
+                <div class="comp-name">杭州上城九堡希尔顿欢朋酒店</div>
+                <div class="comp-brand">希尔顿欢朋 · 约3km</div>
+            </td>
+            <td><span class="badge">高档型</span></td>
+            <td class="price-cell">¥473</td>
+            <td style="color:#ef4444;font-weight:600">+¥59</td>
+            <td class="note-cell">九堡区希尔顿，五一同区竞品</td>
+        </tr>
+        <tr class="">
+            <td>
+                <div class="comp-name">杭州拱墅城北希尔顿欢朋酒店</div>
+                <div class="comp-brand">希尔顿欢朋 · 约8km</div>
+            </td>
+            <td><span class="badge">豪华型</span></td>
+            <td class="price-cell">¥489</td>
+            <td style="color:#ef4444;font-weight:600">+¥75</td>
+            <td class="note-cell">城北希尔顿，档次稍高</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="margin-top:8px;font-size:11px;color:#9ca3af;">
+      ※ 金色高亮行为最主要参考竞品 · 价格均为4月30日入住单日报价 · 国际联号品牌（喜来登/万豪/洲际/希尔顿）仅作市场参考，不作直接对标依据
+    </div>
+  </div>
+
+  <!-- 三档调价策略 -->
+  <div class="card">
+    <div class="card-title">💰 五一调价策略推荐（三档）</div>
+    <div class="strategy-grid">
+      <div class="strategy-card s-conservative">
+        <div class="s-label">🛡️ 保守策略</div>
+        <div class="s-price">¥428</div>
+        <div class="s-reason">略低于希尔顿欢朋¥465，主打性价比留住高频商旅/穷游客</div>
+      </div>
+      <div class="strategy-card s-balanced">
+        <div class="s-label">⚖️ 平衡策略</div>
+        <div class="s-price">¥468</div>
+        <div class="s-reason">对标希尔顿欢朋同价位，凭百达屋品牌差异化争夺高品质旅客</div>
+      </div>
+      <div class="strategy-card s-aggressive">
+        <div class="s-label">🚀 积极策略</div>
+        <div class="s-price">¥528</div>
+        <div class="s-reason">对标亚朵旗舰¥526，凸显开元品质，适合五一高峰前2天</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 综合洞察 -->
+  <div class="card">
+    <div class="card-title">💡 综合收益洞察</div>
+    <div class="insight-box">杭州东站周边酒店竞争激烈，希尔顿欢朋和亚朵是最强竞品，五一价格集中在¥465-¥526区间。由于假繁荣风险（预算游客占比高），建议五一前期（4月30-5月1日）保守定价吸客，后期（5月2-3日）视入住率适度上调。</div>
+  </div>
+
+</div>
+
+<div class="footer">
+  本报告由德胧 AI 数字员工生成 · 竞品数据来源：高德地图POI API + 飞猪FlyAI实时查询<br>
+  数据查询时间：2026-04-14 09:45 · 仅供内部参考，不作对外发布依据
+</div>
+
+</body>
+</html>

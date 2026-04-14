@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>浙江三立开元名都大酒店 · 五一竞品价格分析报告</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif; background: #f0f4f8; color: #1a202c; }
+  
+  .header { background: linear-gradient(135deg, #1E3A8A 0%, #1e40af 60%, #1d4ed8 100%); color: #fff; padding: 28px 32px 24px; }
+  .header-badge { display: inline-block; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); border-radius: 20px; padding: 4px 14px; font-size: 12px; margin-bottom: 12px; }
+  .header h1 { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+  .header-sub { font-size: 13px; opacity: 0.8; }
+  .header-meta { margin-top: 14px; display: flex; gap: 20px; flex-wrap: wrap; }
+  .meta-item { font-size: 12px; opacity: 0.9; }
+  .meta-item strong { opacity: 1; }
+  
+  .container { max-width: 900px; margin: 0 auto; padding: 20px 16px; }
+  
+  .card { background: #fff; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); padding: 20px; margin-bottom: 16px; }
+  .card-title { font-size: 15px; font-weight: 700; color: #1E3A8A; margin-bottom: 14px; display: flex; align-items: center; gap: 6px; }
+  
+  /* 市场情绪 */
+  .sentiment-banner { background: linear-gradient(135deg, #3b82f615, #3b82f608); border-left: 4px solid #3b82f6; border-radius: 8px; padding: 14px 18px; }
+  .sentiment-label { font-size: 16px; font-weight: 700; color: #3b82f6; }
+  .sentiment-desc { font-size: 13px; color: #4b5563; margin-top: 6px; line-height: 1.6; }
+  
+  /* 我方价格 */
+  .my-price-box { background: linear-gradient(135deg, #1E3A8A, #1e40af); color: #fff; border-radius: 10px; padding: 18px; text-align: center; }
+  .my-price-label { font-size: 12px; opacity: 0.8; margin-bottom: 6px; }
+  .my-price-value { font-size: 36px; font-weight: 800; }
+  .my-price-unit { font-size: 14px; opacity: 0.7; }
+  
+  /* 需求指标 */
+  .demand-bar { font-family: monospace; font-size: 15px; color: #F59E0B; letter-spacing: 1px; }
+  .demand-score { font-size: 13px; color: #6b7280; margin-top: 4px; }
+  
+  /* 竞品表格 */
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { background: #f8fafc; color: #374151; font-weight: 600; padding: 10px 8px; text-align: left; border-bottom: 2px solid #e5e7eb; }
+  td { padding: 10px 8px; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
+  .ref-row { background: #fef9ec; }
+  .ref-row td:first-child { border-left: 3px solid #F59E0B; }
+  .comp-name { font-weight: 600; color: #1a202c; }
+  .comp-brand { font-size: 11px; color: #9ca3af; margin-top: 2px; }
+  .badge { background: #e0e7ff; color: #3730a3; border-radius: 4px; padding: 2px 7px; font-size: 11px; white-space: nowrap; }
+  .price-cell { font-weight: 700; font-size: 15px; color: #1E3A8A; }
+  .note-cell { font-size: 12px; color: #6b7280; }
+  
+  /* 策略三档 */
+  .strategy-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  @media (max-width: 600px) { .strategy-grid { grid-template-columns: 1fr; } }
+  .strategy-card { border-radius: 10px; padding: 16px; }
+  .s-conservative { background: #f0fdf4; border: 1.5px solid #86efac; }
+  .s-balanced { background: #eff6ff; border: 1.5px solid #93c5fd; }
+  .s-aggressive { background: #fff7ed; border: 1.5px solid #fdba74; }
+  .s-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+  .s-conservative .s-label { color: #16a34a; }
+  .s-balanced .s-label { color: #1d4ed8; }
+  .s-aggressive .s-label { color: #ea580c; }
+  .s-price { font-size: 28px; font-weight: 800; margin-bottom: 4px; }
+  .s-conservative .s-price { color: #15803d; }
+  .s-balanced .s-price { color: #1e40af; }
+  .s-aggressive .s-price { color: #c2410c; }
+  .s-reason { font-size: 12px; color: #6b7280; line-height: 1.5; }
+  
+  .insight-box { background: #f8fafc; border-radius: 8px; padding: 14px; font-size: 13px; line-height: 1.7; color: #374151; }
+  .insight-box strong { color: #1E3A8A; }
+  
+  .survey-box { background: #fefce8; border: 1px solid #fde68a; border-radius: 8px; padding: 12px 16px; font-size: 13px; color: #713f12; line-height: 1.6; }
+  
+  .footer { text-align: center; font-size: 11px; color: #9ca3af; padding: 20px; }
+  
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 500px) { .info-grid { grid-template-columns: 1fr; } }
+  .info-item { background: #f8fafc; border-radius: 8px; padding: 12px; }
+  .info-label { font-size: 11px; color: #9ca3af; margin-bottom: 4px; }
+  .info-value { font-size: 13px; font-weight: 600; color: #1a202c; }
+  
+  /* Amap数据来源标注 */
+  .data-source { display: inline-flex; align-items: center; gap: 4px; background: #ecfdf5; border: 1px solid #6ee7b7; border-radius: 12px; padding: 3px 10px; font-size: 11px; color: #065f46; margin-bottom: 12px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-badge">🏨 德胧集团 · 五一竞品价格分析报告 v2.0</div>
+  <h1>浙江三立开元名都大酒店</h1>
+  <div class="header-sub">杭州市拱墅区绍兴路538号三立时代广场</div>
+  <div class="header-meta">
+    <div class="meta-item">📅 <strong>分析周期：</strong>2026年4月30日 ~ 5月5日（五一假期）</div>
+    <div class="meta-item">🗺️ <strong>区域：</strong>杭州城北·运河商圈</div>
+    <div class="meta-item">⏱️ <strong>生成时间：</strong>2026-04-14 09:45</div>
+    <div class="meta-item">📍 <strong>坐标：</strong>120.159, 30.311</div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- 市场情绪判断 -->
+  <div class="card">
+    <div class="card-title">📊 市场情绪判断</div>
+    <div class="sentiment-banner">
+      <div class="sentiment-label">📊 混合型市场</div>
+      <div class="sentiment-desc">商务+旅游复合需求，高低端客群并存，建议差异化策略</div>
+    </div>
+    <div style="margin-top:12px;">
+      <div class="survey-box">🗣️ <strong>市场调研摘要：</strong>（模拟调研）杭州城北运河区是近年旅游新热点，五一小红书热度中偏高。客群结构：商务35%+文化旅游45%+其他20%。高端旅游需求比东站周边强，但整体定价空间受西湖核心区高端酒店压制。</div>
+    </div>
+  </div>
+
+  <!-- 基础信息 + 需求指数 -->
+  <div class="card">
+    <div class="card-title">🏨 酒店基础信息</div>
+    <div class="info-grid">
+      <div>
+        <div class="my-price-box">
+          <div class="my-price-label">我方当前五一挂牌价</div>
+          <div class="my-price-value">¥520</div>
+          <div class="my-price-unit">元/间/夜（4月30日起）</div>
+        </div>
+      </div>
+      <div class="info-item" style="display:flex;flex-direction:column;justify-content:center;">
+        <div class="info-label">五一市场需求指数</div>
+        <div class="demand-bar">███████░░░ 7/10</div>
+        <div class="demand-score">需求强度 7/10 — 运河文化区域，距西湖约7km，城北商务+旅游复合型需求</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 竞品分析 -->
+  <div class="card">
+    <div class="card-title">🏁 周边真实竞品分析</div>
+    <div class="data-source">📍 数据来源：高德地图POI周边搜索 + 飞猪实时报价（2026-04-14）</div>
+    <div style="overflow-x:auto;">
+      <table>
+        <thead>
+          <tr>
+            <th>竞品酒店</th>
+            <th>星级/档次</th>
+            <th>五一价格</th>
+            <th>价差</th>
+            <th>分析备注</th>
+          </tr>
+        </thead>
+        <tbody>
+          
+        <tr class="ref-row">
+            <td>
+                <div class="comp-name">杭州拱墅城北希尔顿欢朋酒店</div>
+                <div class="comp-brand">希尔顿欢朋 · 约5km</div>
+            </td>
+            <td><span class="badge">豪华型</span></td>
+            <td class="price-cell">¥489</td>
+            <td style="color:#22c55e;font-weight:600">¥-31</td>
+            <td class="note-cell">城北同档竞品，价格参考</td>
+        </tr>
+        <tr class="">
+            <td>
+                <div class="comp-name">杭州拱墅同协路地铁站希尔顿欢朋</div>
+                <div class="comp-brand">希尔顿欢朋 · 约6km</div>
+            </td>
+            <td><span class="badge">高档型</span></td>
+            <td class="price-cell">¥458</td>
+            <td style="color:#22c55e;font-weight:600">¥-62</td>
+            <td class="note-cell">城北希尔顿系列第二店</td>
+        </tr>
+        <tr class="">
+            <td>
+                <div class="comp-name">杭州博奥开元名都臻品之选酒店</div>
+                <div class="comp-brand">百达屋·开元名都（同品牌） · 约15km</div>
+            </td>
+            <td><span class="badge">豪华型</span></td>
+            <td class="price-cell">¥550</td>
+            <td style="color:#ef4444;font-weight:600">+¥30</td>
+            <td class="note-cell">同品牌参考，萧山区旗舰</td>
+        </tr>
+        <tr class="">
+            <td>
+                <div class="comp-name">杭州西溪喜来登度假大酒店</div>
+                <div class="comp-brand">万豪旗下 · 约15km</div>
+            </td>
+            <td><span class="badge">五星级</span></td>
+            <td class="price-cell">¥882</td>
+            <td style="color:#ef4444;font-weight:600">+¥362</td>
+            <td class="note-cell">西溪旗舰，不直接竞争，反映市场上限</td>
+        </tr>
+        <tr class="">
+            <td>
+                <div class="comp-name">杭州武林洲际酒店</div>
+                <div class="comp-brand">洲际 · 约5km</div>
+            </td>
+            <td><span class="badge">豪华型</span></td>
+            <td class="price-cell">¥1224</td>
+            <td style="color:#ef4444;font-weight:600">+¥704</td>
+            <td class="note-cell">武林CBD旗舰，价格远超，仅作参考</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="margin-top:8px;font-size:11px;color:#9ca3af;">
+      ※ 金色高亮行为最主要参考竞品 · 价格均为4月30日入住单日报价 · 国际联号品牌（喜来登/万豪/洲际/希尔顿）仅作市场参考，不作直接对标依据
+    </div>
+  </div>
+
+  <!-- 三档调价策略 -->
+  <div class="card">
+    <div class="card-title">💰 五一调价策略推荐（三档）</div>
+    <div class="strategy-grid">
+      <div class="strategy-card s-conservative">
+        <div class="s-label">🛡️ 保守策略</div>
+        <div class="s-price">¥508</div>
+        <div class="s-reason">低于希尔顿欢朋¥489+，稳定入住率，运河区位差异化</div>
+      </div>
+      <div class="strategy-card s-balanced">
+        <div class="s-label">⚖️ 平衡策略</div>
+        <div class="s-price">¥568</div>
+        <div class="s-reason">高于城北希尔顿，凸显开元名都品牌力，运河+商务溢价</div>
+      </div>
+      <div class="strategy-card s-aggressive">
+        <div class="s-label">🚀 积极策略</div>
+        <div class="s-price">¥658</div>
+        <div class="s-reason">向同品牌萧山臻品之选¥550对标，五一运河旅游需求充分溢价</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 综合洞察 -->
+  <div class="card">
+    <div class="card-title">💡 综合收益洞察</div>
+    <div class="insight-box">三立开元名都位于运河文化商圈，竞品以城北希尔顿欢朋（¥458-¥489）为主要参考。五一期间运河旅游需求较旺，建议采用平衡~积极策略。注意：不应与西湖区五星酒店（洲际¥1224、喜来登¥882）直接对标，避免客源流失。</div>
+  </div>
+
+</div>
+
+<div class="footer">
+  本报告由德胧 AI 数字员工生成 · 竞品数据来源：高德地图POI API + 飞猪FlyAI实时查询<br>
+  数据查询时间：2026-04-14 09:45 · 仅供内部参考，不作对外发布依据
+</div>
+
+</body>
+</html>
